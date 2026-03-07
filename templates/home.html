@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | Venky Organic Products{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 hero-content">
+                <h1 class="animate-up">Pure, Natural & <span class="text-success">Organic</span></h1>
+                <p class="lead mb-4 animate-up delay-1">Discover the best organic food and natural products for a healthier lifestyle. Straight from the farms to your home.</p>
+                <div class="d-flex gap-3 animate-up delay-2">
+                    <a href="{% url 'product_list' %}" class="btn btn-success btn-lg">Shop Now</a>
+                    <a href="#featured" class="btn btn-outline-light btn-lg text-white">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Circles -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12 mb-5">
+                <h2 class="section-title">Shop by Category</h2>
+            </div>
+            {% for category in categories %}
+            <div class="col-md-3 mb-4">
+                <a href="{{ category.get_absolute_url }}" class="text-decoration-none text-dark">
+                    <div class="category-circle mx-auto mb-3 shadow-sm" style="width: 150px; height: 150px; border-radius: 50%; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="bi bi-tag fs-1 text-success"></i>
+                        {% endif %}
+                    </div>
+                    <h5>{{ category.name }}</h5>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section id="featured" class="py-5">
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-md-3">
+                <div class="product-card card h-100">
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">{{ product.name }}</a></h5>
+                        <p class="card-text text-success fw-bold">${{ product.price }}</p>
+                        <div class="d-grid">
+                            <form action="{% url 'cart_add' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm w-100">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">No products found.</p>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'product_list' %}" class="btn btn-outline-success">View All Products</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
